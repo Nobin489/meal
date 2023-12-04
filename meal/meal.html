@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Search</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #search-box {
+            margin-bottom: 20px;
+        }
+
+        #meal-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .meal-item {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meal Search</h1>
+    <div id="search-box">
+        <input type="text" id="search-input" placeholder="Enter a meal name">
+        <button onclick="searchMeal()">Search</button>
+    </div>
+    <ul id="meal-list"></ul>
+
+    <script>
+        // Function to search for meals
+        function searchMeal() {
+            // Get the search input value
+            var searchInput = document.getElementById("search-input").value;
+
+            // Clear previous content
+            document.getElementById("meal-list").innerHTML = "";
+
+            // Make API request
+            fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchInput}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Display the first 5 results
+                    var meals = data.meals.slice(0, 5);
+                    meals.forEach(meal => displayMeal(meal));
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to display a meal
+        function displayMeal(meal) {
+            var mealList = document.getElementById("meal-list");
+
+            var li = document.createElement("li");
+            li.className = "meal-item";
+
+            var mealName = document.createElement("h3");
+            mealName.textContent = meal.strMeal;
+
+            var mealImage = document.createElement("img");
+            mealImage.src = meal.strMealThumb;
+            mealImage.alt = meal.strMeal;
+
+            var instructions = document.createElement("p");
+            instructions.textContent = meal.strInstructions;
+
+            li.appendChild(mealName);
+            li.appendChild(mealImage);
+            li.appendChild(instructions);
+
+            mealList.appendChild(li);
+        }
+    </script>
+</body>
+</html>
